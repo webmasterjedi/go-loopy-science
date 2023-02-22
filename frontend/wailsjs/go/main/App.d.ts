@@ -4,3 +4,5 @@
 export function OpenDirDialog():Promise<string>;
 
 export function ReadDir(arg1:string):Promise<Array<string>>;
+
+export function ReadFile(arg1:string):Promise<Array<string>>;

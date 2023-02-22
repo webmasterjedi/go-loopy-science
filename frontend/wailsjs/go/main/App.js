@@ -9,3 +9,7 @@ export function OpenDirDialog() {
 export function ReadDir(arg1) {
   return window['go']['main']['App']['ReadDir'](arg1);
 }
+
+export function ReadFile(arg1) {
+  return window['go']['main']['App']['ReadFile'](arg1);
+}

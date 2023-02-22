@@ -1,46 +1,59 @@
 <script lang="ts">
+    import {AppShell, AppBar} from '@skeletonlabs/skeleton'
+    import {OpenDirDialog, ReadDir, ReadFile} from '../wailsjs/go/main/App.js'
+    import {each} from "svelte/internal";
 
-  import {OpenDirDialog} from '../wailsjs/go/main/App.js'
+    let eliteDir: string = ""
+    let files: string[] = []
+    $: eliteDir && readDir(eliteDir)
 
-  let eliteDir: string = "Please choose your Elite Dangerous journal directory."
+    function chooseDir(): void {
+        OpenDirDialog().then(dir => eliteDir = dir)
+    }
 
-
-
-  function chooseDir(): void {
-    OpenDirDialog().then(dir => eliteDir = dir)
-  }
+    function readDir(dir): void {
+        console.log(dir)
+        if (dir) {
+            ReadDir(dir).then(journal_files => {
+                files = journal_files
+                console.log(files)
+            })
+        }
+    }
+    function readFile(file) {
+        console.log(file)
+        if (file) {
+            ReadFile(file).then(events => {
+                each(events, event => {
+                    console.log(JSON.parse(event))
+                })
+            })
+        }
+    }
 </script>
+<AppShell>
+    <svelte:fragment slot="header"><AppBar>Go Loopy Science!</AppBar></svelte:fragment>
+    <svelte:fragment slot="pageHeader"><h1 class="text-center">Step 1</h1></svelte:fragment>
+    <main>
+        <div class="flex justify-evenly items-center">
+            <div class="">{eliteDir ? eliteDir : 'Please choose your Elite Dangerous journal directory.'}</div>
+            <button class="btn variant-ghost-primary" on:click={chooseDir}>Browse</button>
+        </div>
 
-<main>
+        {#if files.length > 0}
+            <ul>
+                {#each files as file}
+                    <li on:click={readFile(file)}>{file}</li>
+                {/each}
+            </ul>
+        {/if}
+    </main>
+    <svelte:fragment slot="pageFooter">Page Footer</svelte:fragment>
+    <svelte:fragment slot="footer">Footer</svelte:fragment>
+</AppShell>
 
-  <div class="result" id="result">{eliteDir}</div>
-  <div class="input-box" id="input">
-    <button class="btn" on:click={chooseDir}>Browse</button>
-  </div>
-</main>
 
 <style>
 
-  .result {
-    height: 20px;
-    line-height: 20px;
-    margin: 1.5rem auto;
-  }
-
-  .input-box .btn {
-    width: 60px;
-    height: 30px;
-    line-height: 30px;
-    border-radius: 3px;
-    border: none;
-    margin: 0 0 0 20px;
-    padding: 0 8px;
-    cursor: pointer;
-  }
-
-  .input-box .btn:hover {
-    background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
-    color: #333333;
-  }
 
 </style>

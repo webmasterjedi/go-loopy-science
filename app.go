@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -31,10 +32,10 @@ func (a *App) OpenDirDialog() (string, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	directoryPath, err := runtime.OpenDirectoryDialog(a.ctx, runtime.OpenDialogOptions{
 		DefaultDirectory: dirname + "\\Saved Games\\Frontier Developments\\Elite Dangerous",
 		Title:            "Choose Elite Dangerous Logs Directory",
+		Filters:          []runtime.FileFilter{{"Log Files", "*.log"}},
 	})
 	if err != nil {
 		return "", fmt.Errorf("failed opening dialog - %s", err.Error())
@@ -45,14 +46,37 @@ func (a *App) OpenDirDialog() (string, error) {
 // ReadDir finds all files in a directory and read them line by line
 func (a *App) ReadDir(dir string) []string {
 	var files []string
-	filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
-		if !info.IsDir() {
+		// Only add files with the .log extension
+		if filepath.Ext(path) == ".log" && !info.IsDir() {
 			files = append(files, path)
 		}
+
 		return nil
 	})
+	if err != nil {
+		return nil
+	}
 	return files
+}
+
+// ReadFile reads a file line by line and parse as JSON
+func (a *App) ReadFile(file string) []string {
+	var lines []string
+	f, err := os.Open(file)
+	if err != nil {
+		return nil
+	}
+	defer f.Close()
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	if err := scanner.Err(); err != nil {
+		return nil
+	}
+	return lines
 }
