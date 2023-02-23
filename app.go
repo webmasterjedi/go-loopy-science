@@ -4,18 +4,35 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"log"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 var userHomeDir, _ = os.UserHomeDir()
 var journalDir string = userHomeDir + "\\Saved Games\\Frontier Developments\\Elite Dangerous"
 var journalDirExists bool = false
 var allBodies []string
+
+type Star struct {
+	Type       string
+	Subclass   int
+	Luminosity string
+}
+type Body struct {
+	Name        string
+	PlanetClass string
+}
+
+type StarSystem struct {
+	Name   string
+	Stars  []Star
+	Bodies []Body
+}
 
 type Entry struct {
 	Event       string `json:"Event"`
@@ -70,7 +87,7 @@ func (a *App) OpenDirDialog() (string, error) {
 	directoryPath, err := runtime.OpenDirectoryDialog(a.ctx, runtime.OpenDialogOptions{
 		DefaultDirectory: dirname + "\\Saved Games\\Frontier Developments\\Elite Dangerous",
 		Title:            "Choose Elite Dangerous Logs Directory",
-		Filters:          []runtime.FileFilter{{"Log Files", "*.log"}},
+		Filters:          []runtime.FileFilter{{DisplayName: "Log Files", Pattern: "*.log"}},
 	})
 	if err != nil {
 		return "", fmt.Errorf("failed opening dialog - %s", err.Error())
