@@ -3,10 +3,11 @@ package EDJournalTools
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/davecgh/go-spew/spew"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/davecgh/go-spew/spew"
 )
 
 /*
@@ -25,58 +26,34 @@ type BaseScanEvent struct {
 }
 type Star struct {
 	BaseScanEvent
-	Event                 string   `json:"event"`
-	ScanType              string   `json:"ScanType"`
-	BodyName              string   `json:"BodyName"`
-	BodyId                int      `json:"BodyId"`
-	Parents               []Parent `json:"Parents"`
-	StarSystem            string   `json:"StarSystem"`
-	SystemAddress         int64    `json:"SystemAddress"`
-	DistanceFromArrivalLS float64  `json:"DistanceFromArrivalLS"`
-	StarType              string   `json:"StarType"`
-	Subclass              int      `json:"Subclass"`
-	StellarMass           float64  `json:"StellarMass"`
-	Radius                float64  `json:"Radius"`
-	AbsoluteMagnitude     float64  `json:"AbsoluteMagnitude"`
-	AgeMY                 float64  `json:"Age_MY"`
-	SurfaceTemperature    float64  `json:"SurfaceTemperature"`
-	Luminosity            string   `json:"Luminosity"`
-	SemiMajorAxis         float64  `json:"SemiMajorAxis"`
-	Eccentricity          float64  `json:"Eccentricity"`
-	OrbitalInclination    float64  `json:"OrbitalInclination"`
-	Periapsis             float64  `json:"Periapsis"`
-	OrbitalPeriod         float64  `json:"OrbitalPeriod"`
-	RotationPeriod        float64  `json:"RotationPeriod"`
-	AxisTilt              float64  `json:"AxialTilt"`
-	WasDiscovered         bool     `json:"WasDiscovered"`
-	WasMapped             bool     `json:"WasMapped"`
+	StarType           string  `json:"StarType"`
+	Subclass           int     `json:"Subclass"`
+	StellarMass        float64 `json:"StellarMass"`
+	Radius             float64 `json:"Radius"`
+	AbsoluteMagnitude  float64 `json:"AbsoluteMagnitude"`
+	AgeMY              float64 `json:"Age_MY"`
+	SurfaceTemperature float64 `json:"SurfaceTemperature"`
+	Luminosity         string  `json:"Luminosity"`
+	SemiMajorAxis      float64 `json:"SemiMajorAxis"`
+	Eccentricity       float64 `json:"Eccentricity"`
+	OrbitalInclination float64 `json:"OrbitalInclination"`
+	Periapsis          float64 `json:"Periapsis"`
+	OrbitalPeriod      float64 `json:"OrbitalPeriod"`
+	RotationPeriod     float64 `json:"RotationPeriod"`
+	AxisTilt           float64 `json:"AxialTilt"`
+	WasDiscovered      bool    `json:"WasDiscovered"`
+	WasMapped          bool    `json:"WasMapped"`
 }
 
 type Planet struct {
 	BaseScanEvent
-	Event                 string   `json:"event"`
-	ScanType              string   `json:"ScanType"`
-	BodyName              string   `json:"BodyName"`
-	BodyId                int      `json:"BodyId"`
-	Parents               []Parent `json:"Parents"`
-	StarSystem            string   `json:"StarSystem"`
-	SystemAddress         int64    `json:"SystemAddress"`
-	DistanceFromArrivalLS float64  `json:"DistanceFromArrivalLS"`
-	PlanetClass           string
+	PlanetClass string
 }
 
 type Moon struct {
 	BaseScanEvent
-	Event                 string   `json:"event"`
-	ScanType              string   `json:"ScanType"`
-	BodyName              string   `json:"BodyName"`
-	BodyId                int      `json:"BodyId"`
-	Parents               []Parent `json:"Parents"`
-	StarSystem            string   `json:"StarSystem"`
-	SystemAddress         int64    `json:"SystemAddress"`
-	DistanceFromArrivalLS float64  `json:"DistanceFromArrivalLS"`
-	Name                  string
-	PlanetClass           string
+	Name        string
+	PlanetClass string
 }
 
 type StarSystem struct {
@@ -264,10 +241,10 @@ func (s *Star) UnmarshalJSON(data []byte) error {
 	if tmp.AxisTilt != 0 {
 		s.AxisTilt = tmp.AxisTilt
 	}
-	if tmp.WasDiscovered != false {
+	if tmp.WasDiscovered {
 		s.WasDiscovered = tmp.WasDiscovered
 	}
-	if tmp.WasMapped != false {
+	if tmp.WasMapped {
 		s.WasMapped = tmp.WasMapped
 	}
 	return nil
@@ -302,8 +279,9 @@ func ParseJournalEvent(data []byte) (any, error) {
 			if err != nil {
 				return baseScanEvent, err
 			}
-			spew.Dump(star.StarType)
+			//spew.Dump(star)
 			if star.StarType != "" {
+				fmt.Print("Star struct\n")
 				star.BaseScanEvent = baseScanEvent
 				return star, nil
 			}
@@ -316,7 +294,7 @@ func ParseJournalEvent(data []byte) (any, error) {
 			if err != nil {
 				return baseScanEvent, err
 			}
-			spew.Dump(planet.PlanetClass)
+			fmt.Print(planet.PlanetClass + "\n")
 			if planet.PlanetClass != "" {
 				planet.BaseScanEvent = baseScanEvent
 				return planet, nil
@@ -373,7 +351,7 @@ func ProcessJournalFile(path string) error {
 // If it is not in the list, it adds it to the list and returns it
 func SetCurrentStarSystem(entry *BaseScanEvent) *StarSystem {
 
-	for index, _ := range AllStarSystems {
+	for index := range AllStarSystems {
 		if AllStarSystems[index].Name == entry.StarSystem {
 
 			return AllStarSystems[index]
