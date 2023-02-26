@@ -3,10 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/davecgh/go-spew/spew"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
-	"goloopyscience/EDJournalTools"
+	"goloopyscience/LoopyDB"
 	"log"
 	"os"
 )
@@ -30,13 +29,17 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+	err := LoopyDB.CreateTables()
+	if err != nil {
+		log.Fatal(err)
+	}
 	if a.checkJournalDir() {
 		journalDirExists = true
-		err := EDJournalTools.ProcessJournalDirectory(journalDir)
+		/*err := EDJournalTools.ProcessJournalDirectory(journalDir)
 		if err != nil {
 			log.Fatal(err)
 		}
-		spew.Dump(EDJournalTools.AllStarSystems)
+		spew.Dump(EDJournalTools.AllStarSystems)*/
 
 	}
 }

@@ -44,13 +44,78 @@ type Star struct {
 
 type Planet struct {
 	BaseScanEvent
-	PlanetClass string
+	TidalLock             bool   `json:"TidalLock"`
+	TerraformState        string `json:"TerraformState"`
+	PlanetClass           string `json:"PlanetClass"`
+	Atmosphere            string `json:"Atmosphere"`
+	AtmosphereType        string `json:"AtmosphereType"`
+	AtmosphereComposition []struct {
+		Name    string  `json:"Name"`
+		Percent float64 `json:"Percent"`
+	}
+	Volcanism          string  `json:"Volcanism"`
+	MassEM             float64 `json:"MassEM"`
+	Radius             float64 `json:"Radius"`
+	SurfaceGravity     float64 `json:"SurfaceGravity"`
+	SurfaceTemperature float64 `json:"SurfaceTemperature"`
+	SurfacePressure    float64 `json:"SurfacePressure"`
+	Landable           bool    `json:"Landable"`
+	Materials          []struct {
+		Name    string  `json:"Name"`
+		Percent float64 `json:"Percent"`
+	}
+	Composition struct {
+		Ice   float64 `json:"Ice"`
+		Rock  float64 `json:"Rock"`
+		Metal float64 `json:"Metal"`
+	}
+	SemiMajorAxis      float64 `json:"SemiMajorAxis"`
+	Eccentricity       float64 `json:"Eccentricity"`
+	OrbitalInclination float64 `json:"OrbitalInclination"`
+	Periapsis          float64 `json:"Periapsis"`
+	OrbitalPeriod      float64 `json:"OrbitalPeriod"`
+	RotationPeriod     float64 `json:"RotationPeriod"`
+	AxialTilt          float64 `json:"AxialTilt"`
+	WasDiscovered      bool    `json:"WasDiscovered"`
+	WasMapped          bool    `json:"WasMapped"`
 }
 
 type Moon struct {
 	BaseScanEvent
-	Name        string
-	PlanetClass string
+	TidalLock             bool   `json:"TidalLock"`
+	TerraformState        string `json:"TerraformState"`
+	PlanetClass           string `json:"PlanetClass"`
+	Atmosphere            string `json:"Atmosphere"`
+	AtmosphereType        string `json:"AtmosphereType"`
+	AtmosphereComposition []struct {
+		Name    string  `json:"Name"`
+		Percent float64 `json:"Percent"`
+	}
+	Volcanism          string  `json:"Volcanism"`
+	MassEM             float64 `json:"MassEM"`
+	Radius             float64 `json:"Radius"`
+	SurfaceGravity     float64 `json:"SurfaceGravity"`
+	SurfaceTemperature float64 `json:"SurfaceTemperature"`
+	SurfacePressure    float64 `json:"SurfacePressure"`
+	Landable           bool    `json:"Landable"`
+	Materials          []struct {
+		Name    string  `json:"Name"`
+		Percent float64 `json:"Percent"`
+	}
+	Composition struct {
+		Ice   float64 `json:"Ice"`
+		Rock  float64 `json:"Rock"`
+		Metal float64 `json:"Metal"`
+	}
+	SemiMajorAxis      float64 `json:"SemiMajorAxis"`
+	Eccentricity       float64 `json:"Eccentricity"`
+	OrbitalInclination float64 `json:"OrbitalInclination"`
+	Periapsis          float64 `json:"Periapsis"`
+	OrbitalPeriod      float64 `json:"OrbitalPeriod"`
+	RotationPeriod     float64 `json:"RotationPeriod"`
+	AxialTilt          float64 `json:"AxialTilt"`
+	WasDiscovered      bool    `json:"WasDiscovered"`
+	WasMapped          bool    `json:"WasMapped"`
 }
 
 type StarSystem struct {
