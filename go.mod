@@ -1,8 +1,12 @@
-module changeme
+module goloopyscience
 
 go 1.18
 
-require github.com/wailsapp/wails/v2 v2.3.1
+require (
+	github.com/davecgh/go-spew v1.1.1
+	github.com/json-iterator/go v1.1.12
+	github.com/wailsapp/wails/v2 v2.3.1
+)
 
 require (
 	github.com/bep/debounce v1.2.1 // indirect
@@ -17,6 +21,8 @@ require (
 	github.com/leaanthony/slicer v1.5.0 // indirect
 	github.com/mattn/go-colorable v0.1.11 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
+	github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 // indirect
+	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pkg/browser v0.0.0-20210706143420-7d21f8c997e2 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/samber/lo v1.27.1 // indirect
