@@ -3,10 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/wailsapp/wails/v2/pkg/runtime"
-	"goloopyscience/loopy/db"
+	"goloopyscience/loopy/journal"
 	"log"
 	"os"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 var userHomeDir, _ = os.UserHomeDir()
@@ -27,12 +28,13 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
-	err := db.CreateTables()
-	if err != nil {
-		log.Fatal(err)
-	}
+	// err := db.CreateTables()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 	if a.checkJournalDir() {
 		journalDirExists = true
+		journal.ProcessJournalDirectory(journalDir)
 	}
 }
 

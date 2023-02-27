@@ -113,9 +113,9 @@ type DetailedScanEvent struct {
 
 // StarSystem is the type used to store a complete star system
 type StarSystem struct {
-	FSDJumpEvent
+	*FSDJumpEvent
 	Stars  []Star
-	Bodies []Planet
+	Bodies []Body
 }
 
 type Star struct {
@@ -151,7 +151,7 @@ type Star struct {
 	WasMapped     bool `json:"WasMapped,omitempty"`
 }
 
-type Planet struct {
+type Body struct {
 	BodyName              string   `json:"BodyName,omitempty"`
 	BodyID                uint64   `json:"BodyID,omitempty"`
 	Parents               []Parent `json:"Parents,omitempty"`
@@ -286,6 +286,6 @@ func (s *StarSystem) AddStar(star Star) {
 	s.Stars = append(s.Stars, star)
 }
 
-func (s *StarSystem) AddBody(body Planet) {
+func (s *StarSystem) AddBody(body Body) {
 	s.Bodies = append(s.Bodies, body)
 }

@@ -1,10 +1,11 @@
 package journal
 
 import (
-	jsoniter "github.com/json-iterator/go"
 	"os"
 	"path/filepath"
 	"strings"
+
+	jsoniter "github.com/json-iterator/go"
 )
 
 /*
@@ -68,52 +69,52 @@ Main package methods
 */
 
 // ParseJournalEvent parses the journal event and returns the proper struct based on the event types
-func ParseJournalEvent(data []byte) (any, error) {
+func ParseJournalEvent(data []byte) (Event, error) {
 	var baseScanEvent BaseScanEvent
 
 	err := json.Unmarshal(data, &baseScanEvent)
 
 	if err != nil {
-		return baseScanEvent, err
+		return &baseScanEvent, err
 	}
 
 	//switch to handle main event types
 	switch baseScanEvent.Event {
 	//FSDJump event is used to get current star system
 	case "FSDJump":
-		return baseScanEvent, nil
+		return &baseScanEvent, nil
 	//Scan event is used to get the scan type
 	case "Scan":
 		switch baseScanEvent.ScanType {
 		//AutoScan event is used to get the stars in the system
 		case "AutoScan":
-			var star Star
-			err := json.Unmarshal(data, &star)
+			var autoScan AutoScanEvent
+			err := json.Unmarshal(data, &autoScan)
 			if err != nil {
-				return baseScanEvent, err
+				return &baseScanEvent, err
 			}
 
-			if star.StarType != "" {
-				star.BaseScanEvent = baseScanEvent
-				return star, nil
+			if autoScan.StarType != "" {
+				autoScan.BaseScanEvent = baseScanEvent
+				return &autoScan, nil
 			}
-			return baseScanEvent, nil
+			return &baseScanEvent, nil
 
 		//DetailedScan event is used to get the planets in the system
 		case "Detailed":
-			var planet Planet
-			err := json.Unmarshal(data, &planet)
+			var detailed DetailedScanEvent
+			err := json.Unmarshal(data, &detailed)
 			if err != nil {
-				return baseScanEvent, err
+				return &baseScanEvent, err
 			}
-			if planet.PlanetClass != "" {
-				planet.BaseScanEvent = baseScanEvent
-				return planet, nil
+			if detailed.PlanetClass != "" {
+				detailed.BaseScanEvent = baseScanEvent
+				return &detailed, nil
 			}
 		}
 	}
 
-	return baseScanEvent, nil
+	return &baseScanEvent, nil
 }
 
 // ReadJournalFile reads the journal file and returns the data
@@ -134,25 +135,19 @@ func ProcessJournalFile(path string) error {
 			continue
 		}
 		//parse journal entry and returns struct based on event types
-		journalEntry, err := ParseJournalEvent([]byte(entry))
+		event, err := ParseJournalEvent([]byte(entry))
 		if err != nil {
 			return err
 		}
 
-		if fsdJumpEvent, ok := journalEntry.(FSDJumpEvent); ok {
-			//set current star system
-			currentStarSystem = SetCurrentStarSystem(fsdJumpEvent)
-			continue
-		}
-		if star, ok := journalEntry.(Star); ok {
-			//add star to current star system
-			AddStarToStarSystem(&star)
-			continue
-		}
-		if planet, ok := journalEntry.(Planet); ok {
-			//add planet to current star system
-			AddBodyToStarSystem(&planet)
-			continue
+		//use the event type to call the appropriate function
+		switch event.EventType() {
+		case "FSDJumpEvent":
+			currentStarSystem = SetCurrentStarSystem(event.(*FSDJumpEvent))
+		case "AutoScanEvent":
+			AddStarToStarSystem(event.(*AutoScanEvent))
+		case "DetailedScanEvent":
+			AddBodyToStarSystem(event.(*DetailedScanEvent))
 		}
 	}
 	return nil
@@ -160,7 +155,7 @@ func ProcessJournalFile(path string) error {
 
 // SetCurrentStarSystem checks if the star system is already in the list of star systems and returns it if it is
 // If it is not in the list, it adds it to the list and returns it
-func SetCurrentStarSystem(entry FSDJumpEvent) *StarSystem {
+func SetCurrentStarSystem(entry *FSDJumpEvent) *StarSystem {
 
 	for index := range AllStarSystems {
 		if AllStarSystems[index].FSDJumpEvent.StarSystem == entry.StarSystem {
@@ -175,14 +170,39 @@ func SetCurrentStarSystem(entry FSDJumpEvent) *StarSystem {
 	return AllStarSystems[len(AllStarSystems)-1]
 }
 
-// AddBodyToStarSystem adds a body to a star system
-func AddBodyToStarSystem(planet *Planet) {
-	currentStarSystem.Bodies = append(currentStarSystem.Bodies, *planet)
+// AddStarToStarSystem adds a star to a star system
+func AddStarToStarSystem(autoScan *AutoScanEvent) error {
+	//convert autoScan struct to Star struct
+
+	//copy all fields from autoScan to star
+	autoScanJSON, err := json.Marshal(autoScan)
+	if err != nil {
+		return err
+	}
+	var star Star
+	err = json.Unmarshal(autoScanJSON, &star)
+	if err != nil {
+		return err
+	}
+
+	currentStarSystem.Stars = append(currentStarSystem.Stars, star)
+	return nil
 }
 
-// AddStarToStarSystem adds a star to a star system
-func AddStarToStarSystem(star *Star) {
-	currentStarSystem.Stars = append(currentStarSystem.Stars, *star)
+// AddBodyToStarSystem adds a body to a star system
+func AddBodyToStarSystem(detailed *DetailedScanEvent) error {
+	//convert detailed struct to Body struct
+	detailedJSON, err := json.Marshal(detailed)
+	if err != nil {
+		return err
+	}
+	var body Body
+	err = json.Unmarshal(detailedJSON, &body)
+	if err != nil {
+		return err
+	}
+	currentStarSystem.Bodies = append(currentStarSystem.Bodies, body)
+	return nil
 }
 
 // ProcessJournalDirectory processes all journal files in a directory
