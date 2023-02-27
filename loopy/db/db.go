@@ -1,4 +1,4 @@
-package LoopyDB
+package db
 
 import (
 	"database/sql"
@@ -6,18 +6,18 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-// GetLoopyDB returns a pointer to the LoopyDB database
+// GetLoopyDB returns a pointer to the loopy database
 func GetLoopyDB() (*sql.DB, error) {
-	db, err := sql.Open("sqlite3", "./Loopy.db")
+	db, err := sql.Open("sqlite3", "./loopy.db")
 	if err != nil {
 		return nil, err
 	}
 	return db, nil
 }
 
-// CreateTables creates the tables in the LoopyDB database
+// CreateTables creates the tables in the loopy database
 func CreateTables() error {
-	// Get the LoopyDB database
+	// Get the loopy database
 	db, err := GetLoopyDB()
 	if err != nil {
 		fmt.Print(err)

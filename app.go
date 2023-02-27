@@ -3,14 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
-	jsoniter "github.com/json-iterator/go"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
-	"goloopyscience/LoopyDB"
+	"goloopyscience/loopy/db"
 	"log"
 	"os"
 )
 
-var json = jsoniter.ConfigCompatibleWithStandardLibrary
 var userHomeDir, _ = os.UserHomeDir()
 var journalDir string = userHomeDir + "\\Saved Games\\Frontier Developments\\Elite Dangerous\\test"
 var journalDirExists bool = false
@@ -29,18 +27,12 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
-	err := LoopyDB.CreateTables()
+	err := db.CreateTables()
 	if err != nil {
 		log.Fatal(err)
 	}
 	if a.checkJournalDir() {
 		journalDirExists = true
-		/*err := EDJournalTools.ProcessJournalDirectory(journalDir)
-		if err != nil {
-			log.Fatal(err)
-		}
-		spew.Dump(EDJournalTools.AllStarSystems)*/
-
 	}
 }
 
@@ -48,9 +40,10 @@ func (a *App) startup(ctx context.Context) {
 func (a *App) checkJournalDir() bool {
 	if _, err := os.Stat(journalDir); os.IsNotExist(err) {
 		journalDirExists = false
-		return false
+		return journalDirExists
 	}
-	return true
+	journalDirExists = true
+	return journalDirExists
 }
 
 // OpenDirDialog function to choose a directory with OpenDirectoryDialog
