@@ -4,10 +4,11 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
+	"goloopyscience/loopy/dscanner/types"
 )
 
-// GetLoopyDB returns a pointer to the loopy database
-func GetLoopyDB() (*sql.DB, error) {
+// GetDB returns a pointer to the loopy database
+func GetDB() (*sql.DB, error) {
 	db, err := sql.Open("sqlite3", "./loopy.db")
 	if err != nil {
 		return nil, err
@@ -18,7 +19,7 @@ func GetLoopyDB() (*sql.DB, error) {
 // CreateTables creates the tables in the loopy database
 func CreateTables() error {
 	// Get the loopy database
-	db, err := GetLoopyDB()
+	db, err := GetDB()
 	if err != nil {
 		fmt.Print(err)
 		return err
@@ -29,95 +30,54 @@ func CreateTables() error {
 			panic(err)
 		}
 	}(db)
-	fmt.Print("Creating tables...")
 
-	//check if the Systems table exists, if not create it
-	_, err = db.Exec(`
-		create table if not exists Systems
-		(
-			SystemAddress integer
-				primary key
-				unique,
-			SystemName text not null
-				unique,
-			Body       text,
-			BodyID     integer,
-			BodyType   text
-		);`)
-	if err != nil {
-		fmt.Print(err)
-		return err
-	}
-	//check if the Stars table exists, if not create it
-	_, err = db.Exec(`
-		create table if not exists Stars
-		(
-			Id                 integer not null
-				constraint Stars_pk
-					primary key autoincrement,
-			ParentId           integer,
-			SystemAddress      integer,
-			StarType           text,
-			Subclass           integer,
-			StellarMass        real,
-			Radius             real,
-			AbsoluteMagnitude  real,
-			AgeMY              real,
-			SurfaceTemperature real,
-			Luminosity         text,
-			SemiMajorAxis      real,
-			Eccentricity       real,
-			OrbitalInclination real,
-			Periapsis          real,
-			OrbitalPeriod      real,
-			RotationPeriod     real,
-			AxialTilt          real,
-			WasDiscovered      boolean,
-			WasMapped          boolean
-		);`)
+	_, err = db.Exec(createSystems)
 	if err != nil {
 		fmt.Print(err)
 		return err
 	}
 
-	//check if the Planets table exists, if not create it
-	_, err = db.Exec(`
-		create table if not exists Planets
-		(
-			Id                    integer not null
-				constraint Planets_pk
-					primary key autoincrement,
-			ParentId              integer,
-			StarId                integer,
-			SystemAddress         integer,
-			TidalLock             boolean,
-			TerraformState        text,
-			PlanetClass           text,
-			Atmosphere            text,
-			AtmosphereType        text,
-			AtmosphereComposition blob,
-			Volcanism             text,
-			MassEM                real,
-			Radius                real,
-			SurfaceGravity        real,
-			SurfaceTemperature    real,
-			SurfacePressure       real,
-			Landable              boolean,
-			Materials             blob,
-			Composition           blob,
-			SemiMajorAxis         real,
-			Eccentricity          real,
-			OrbitalInclination    real,
-			Periapsis             real,
-			OrbitalPeriod         real,
-			RotationPeriod        real,
-			AxialTilt             real,
-			WasDiscovered         boolean,
-			WasMapped             boolean
-		);`)
+	_, err = db.Exec(createStars)
 	if err != nil {
 		fmt.Print(err)
 		return err
 	}
+
+	_, err = db.Exec(createBodies)
+	if err != nil {
+		fmt.Print(err)
+		return err
+	}
+	return nil
+}
+
+func InsertSystem(system *types.StarSystem) error {
+	// Get the loopy database
+	db, err := GetDB()
+	if err != nil {
+		fmt.Print(err)
+		return err
+	}
+	stmt, err := db.Prepare(insertSystemSQL)
+	if err != nil {
+		fmt.Print(err)
+		return err
+	}
+	res, err := stmt.Exec(system.FSDJumpEvent.SystemAddress, system.FSDJumpEvent.StarSystem, system.FSDJumpEvent.Body, system.FSDJumpEvent.BodyID, system.FSDJumpEvent.BodyType)
+	if err != nil {
+		fmt.Print(err)
+		return err
+	}
+	newSystemId, err := res.LastInsertId()
+	if err != nil {
+		fmt.Print(err)
+		return err
+	}
+	fmt.Print(newSystemId)
+
+	/*for _, star := range system.Stars {
+
+	}*/
+
 	return nil
 }

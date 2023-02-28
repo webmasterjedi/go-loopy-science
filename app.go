@@ -3,7 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
-	"goloopyscience/loopy/journal"
+	"github.com/davecgh/go-spew/spew"
+	"goloopyscience/loopy/db"
+	"goloopyscience/loopy/dscanner"
 	"log"
 	"os"
 
@@ -28,13 +30,19 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
-	// err := db.CreateTables()
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	err := db.CreateTables()
+	if err != nil {
+		log.Fatal(err)
+	}
 	if a.checkJournalDir() {
 		journalDirExists = true
-		journal.ProcessJournalDirectory(journalDir)
+		//Scan the D
+		starSystems, err := dscanner.Honk(journalDir)
+		if err != nil {
+			log.Fatal(err)
+		}
+		spew.Dump(starSystems)
+
 	}
 }
 
