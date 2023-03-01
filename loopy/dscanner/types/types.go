@@ -1,6 +1,7 @@
 package types
 
 import (
+	"fmt"
 	jsoniter "github.com/json-iterator/go"
 )
 
@@ -139,7 +140,7 @@ type Star struct {
 	Periapsis             float64  `json:"Periapsis,omitempty"`
 	OrbitalPeriod         float64  `json:"OrbitalPeriod,omitempty"`
 	RotationPeriod        float64  `json:"RotationPeriod,omitempty"`
-	AxisTilt              float64  `json:"AxialTilt,omitempty"`
+	AxialTilt             float64  `json:"AxialTilt,omitempty"`
 	Rings                 []Ring   `json:"Rings,omitempty"`
 	WasDiscovered         bool     `json:"WasDiscovered,omitempty"`
 	WasMapped             bool     `json:"WasMapped,omitempty"`
@@ -274,4 +275,20 @@ func (p *Parent) UnmarshalJSON(data []byte) error {
 	}
 
 	return nil
+}
+func (p *Parent) toJSONString() string {
+	b, err := json.Marshal(p)
+	if err != nil {
+		fmt.Println(err)
+		return ""
+	}
+	return string(b)
+}
+func (r *Ring) toJSONString() string {
+	b, err := json.Marshal(r)
+	if err != nil {
+		fmt.Println(err)
+		return ""
+	}
+	return string(b)
 }

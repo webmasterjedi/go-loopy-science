@@ -1,6 +1,7 @@
 package dscanner
 
 import (
+	"fmt"
 	jsoniter "github.com/json-iterator/go"
 	"goloopyscience/loopy/db"
 	"goloopyscience/loopy/dscanner/types"
@@ -156,7 +157,7 @@ func setStarSystem(entry *types.FSDJumpEvent) *types.StarSystem {
 	//save to db
 	err := db.InsertSystem(starSystem)
 	if err != nil {
-		panic(err)
+		fmt.Print(err)
 	}
 	allSystems = append(allSystems, starSystem)
 	return allSystems[len(allSystems)-1]
@@ -174,7 +175,11 @@ func addStar(autoScan *types.AutoScanEvent) error {
 	if err != nil {
 		return err
 	}
-
+	//save to db
+	err = db.InsertStar(&star)
+	if err != nil {
+		fmt.Print(err)
+	}
 	currentSystem.AddStar(&star)
 	return nil
 }
@@ -190,6 +195,11 @@ func addBody(detailed *types.DetailedScanEvent) error {
 	err = json.Unmarshal(detailedJSON, &body)
 	if err != nil {
 		return err
+	}
+	//save to db
+	err = db.InsertBody(&body)
+	if err != nil {
+		fmt.Print(err)
 	}
 	currentSystem.AddBody(&body)
 	return nil

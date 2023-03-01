@@ -30,6 +30,9 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+	//for testing remove loopy.db file first
+	_ = os.Remove("./loopy.db")
+
 	err := db.CreateTables()
 	if err != nil {
 		log.Fatal(err)

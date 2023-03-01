@@ -22,6 +22,8 @@ create table if not exists Stars
 		constraint Stars_pk
 			primary key autoincrement,
 	ParentId           integer,
+	BodyName           text,
+	BodyID             integer,
 	SystemAddress      integer,
 	StarType           text,
 	Subclass           integer,
@@ -38,6 +40,7 @@ create table if not exists Stars
 	OrbitalPeriod      real,
 	RotationPeriod     real,
 	AxialTilt          real,
+	Rings              blob,
 	WasDiscovered      boolean,
 	WasMapped          boolean
 );`
@@ -47,9 +50,11 @@ var createBodies = `
 create table if not exists Bodies
 (
 	Id                    integer not null
-		constraint Planets_pk
+		constraint Bodies_pk
 			primary key autoincrement,
 	ParentId              integer,
+	BodyName           text,
+	BodyID             integer,
 	StarId                integer,
 	SystemAddress         integer,
 	TidalLock             boolean,
@@ -74,6 +79,7 @@ create table if not exists Bodies
 	OrbitalPeriod         real,
 	RotationPeriod        real,
 	AxialTilt             real,
+	Rings                 blob,
 	WasDiscovered         boolean,
 	WasMapped             boolean
 );`
@@ -83,3 +89,15 @@ var insertSystemSQL = `
 insert into Systems
     (SystemAddress, StarSystem, Body, BodyID, BodyType)
 values (?, ?, ?, ?, ?);`
+
+// insert a star into the Stars table
+var insertStarSQL = `
+insert into Stars
+	(ParentId, BodyName, BodyID, SystemAddress, StarType, Subclass, StellarMass, Radius, AbsoluteMagnitude, AgeMY, SurfaceTemperature, Luminosity, SemiMajorAxis, Eccentricity, OrbitalInclination, Periapsis, OrbitalPeriod, RotationPeriod, AxialTilt, Rings, WasDiscovered, WasMapped)
+values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`
+
+// insert a body into the Bodies table
+var insertBodySQL = `
+insert into Bodies
+	(ParentId, BodyName, BodyID, StarId, SystemAddress, TidalLock, TerraformState, PlanetClass, Atmosphere, AtmosphereType, AtmosphereComposition, Volcanism, MassEM, Radius, SurfaceGravity, SurfaceTemperature, SurfacePressure, Landable, Materials, BodyComposition, SemiMajorAxis, Eccentricity, OrbitalInclination, Periapsis, OrbitalPeriod, RotationPeriod, AxialTilt, Rings, WasDiscovered, WasMapped)
+values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`
