@@ -14,7 +14,7 @@ var (
 	ErrNoRecord = errors.New("record not found")
 )
 
-func handleSQLiteError(err error) error {
+func handleDBError(err error) error {
 	var sqliteErr sqlite3.Error
 	if errors.As(err, &sqliteErr) {
 		if errors.Is(sqliteErr.Code, sqlite3.ErrConstraint) {
@@ -83,7 +83,7 @@ func InsertSystem(system *types.StarSystem) error {
 
 	if err != nil {
 		//check sql error type for unique constraint
-		err = handleSQLiteError(err)
+		err = handleDBError(err)
 		if err == ErrDup {
 			return nil
 		}
@@ -109,11 +109,11 @@ func InsertStar(star *types.Star) error {
 	defer stmt.Close()
 	//TODO: get parent star/body id from Parents array
 
-	_, err = stmt.Exec(0, star.BodyName, star.BodyID, star.SystemAddress, star.StarType, star.Subclass, star.StellarMass, star.Radius, star.AbsoluteMagnitude, star.AgeMY, star.SurfaceTemperature, star.Luminosity, star.SemiMajorAxis, star.Eccentricity, star.OrbitalInclination, star.Periapsis, star.OrbitalPeriod, star.RotationPeriod, star.AxialTilt, star.Rings, star.WasDiscovered, star.WasMapped)
+	_, err = stmt.Exec(0, star.BodyName, star.BodyID, star.ParentsToJson(), star.SystemAddress, star.StarType, star.Subclass, star.StellarMass, star.Radius, star.AbsoluteMagnitude, star.AgeMY, star.SurfaceTemperature, star.Luminosity, star.SemiMajorAxis, star.Eccentricity, star.OrbitalInclination, star.Periapsis, star.OrbitalPeriod, star.RotationPeriod, star.AxialTilt, star.RingsToJson(), star.WasDiscovered, star.WasMapped)
 
 	if err != nil {
 		//check sql error type for unique constraint
-		err = handleSQLiteError(err)
+		err = handleDBError(err)
 		if err == ErrDup {
 			return nil
 		}
@@ -137,10 +137,10 @@ func InsertBody(body *types.Body) error {
 		return err
 	}
 	defer stmt.Close()
-	_, err = stmt.Exec(0, body.BodyName, body.BodyID, 0, body.SystemAddress, body.TidalLock, body.TerraformState, body.PlanetClass, body.Atmosphere, body.AtmosphereType, body.AtmosphereComposition, body.Volcanism, body.MassEM, body.Radius, body.SurfaceGravity, body.SurfaceTemperature, body.SurfacePressure, body.Landable, body.Materials, body.BodyComposition, body.SemiMajorAxis, body.Eccentricity, body.OrbitalInclination, body.Periapsis, body.OrbitalPeriod, body.RotationPeriod, body.AxialTilt, body.Rings, body.WasDiscovered, body.WasMapped)
+	_, err = stmt.Exec(0, body.BodyName, body.BodyID, body.ParentsToJson(), 0, body.SystemAddress, body.TidalLock, body.TerraformState, body.PlanetClass, body.Atmosphere, body.AtmosphereType, body.AtmosphereCompositionToJson(), body.Volcanism, body.MassEM, body.Radius, body.SurfaceGravity, body.SurfaceTemperature, body.SurfacePressure, body.Landable, body.MaterialsToJson(), body.BodyCompositionToJson(), body.SemiMajorAxis, body.Eccentricity, body.OrbitalInclination, body.Periapsis, body.OrbitalPeriod, body.RotationPeriod, body.AxialTilt, body.RingsToJson(), body.WasDiscovered, body.WasMapped)
 	if err != nil {
 		//check sql error type for unique constraint
-		err = handleSQLiteError(err)
+		err = handleDBError(err)
 		if err == ErrDup {
 			return nil
 		}

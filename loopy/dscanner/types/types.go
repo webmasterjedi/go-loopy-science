@@ -1,8 +1,8 @@
 package types
 
 import (
-	"fmt"
 	jsoniter "github.com/json-iterator/go"
+	"log"
 )
 
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
@@ -14,6 +14,15 @@ Define types based on Elite Dangerous Player Journal API documentation here: htt
 type Event interface {
 	EventType() string
 	// add additional methods here as needed
+}
+
+type SystemBody interface {
+	ParentsToJson() string
+	MaterialsToJson() string
+	AtmosphereCompositionToJson() string
+	BodyCompositionToJson() string
+	RingsToJson() string
+	ToJson() string
 }
 
 // BaseScanEvent is the base type for all scan events
@@ -204,7 +213,8 @@ type BodyComposition struct {
 	Metal float64 `json:"Metal"`
 }
 
-// struct methods for interface compliance
+// EventType struct methods for interface compliance
+// returns the event type
 func (bse *BaseScanEvent) EventType() string {
 	return "BaseScanEvent"
 }
@@ -234,6 +244,70 @@ func (s *StarSystem) AddStar(star *Star) {
 
 func (s *StarSystem) AddBody(body *Body) {
 	s.Bodies = append(s.Bodies, body)
+}
+
+func (s *Star) ParentsToJson() string {
+	parents, err := json.Marshal(s.Parents)
+	if err != nil {
+		log.Println(err)
+	}
+	return string(parents)
+}
+
+func (s *Star) RingsToJson() string {
+	rings, err := json.Marshal(s.Rings)
+	if err != nil {
+		log.Println(err)
+	}
+	return string(rings)
+}
+
+func (b *Body) ParentsToJson() string {
+	parents, err := json.Marshal(b.Parents)
+	if err != nil {
+		log.Println(err)
+	}
+	return string(parents)
+}
+
+func (b *Body) RingsToJson() string {
+	rings, err := json.Marshal(b.Rings)
+	if err != nil {
+		log.Println(err)
+	}
+	return string(rings)
+}
+
+func (b *Body) MaterialsToJson() string {
+	materials, err := json.Marshal(b.Materials)
+	if err != nil {
+		log.Println(err)
+	}
+	return string(materials)
+}
+
+func (b *Body) AtmosphereCompositionToJson() string {
+	atmosphereComposition, err := json.Marshal(b.AtmosphereComposition)
+	if err != nil {
+		log.Println(err)
+	}
+	return string(atmosphereComposition)
+}
+
+func (b *Body) BodyCompositionToJson() string {
+	bodyComposition, err := json.Marshal(b.BodyComposition)
+	if err != nil {
+		log.Println(err)
+	}
+	return string(bodyComposition)
+}
+
+func (b *Body) ToJson() string {
+	json, err := json.Marshal(b)
+	if err != nil {
+		log.Println(err)
+	}
+	return string(json)
 }
 
 // UnmarshalJSON is a custom unmarshaler for the Parent struct
@@ -275,20 +349,4 @@ func (p *Parent) UnmarshalJSON(data []byte) error {
 	}
 
 	return nil
-}
-func (p *Parent) toJSONString() string {
-	b, err := json.Marshal(p)
-	if err != nil {
-		fmt.Println(err)
-		return ""
-	}
-	return string(b)
-}
-func (r *Ring) toJSONString() string {
-	b, err := json.Marshal(r)
-	if err != nil {
-		fmt.Println(err)
-		return ""
-	}
-	return string(b)
 }

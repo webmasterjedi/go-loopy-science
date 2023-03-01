@@ -24,6 +24,7 @@ create table if not exists Stars
 	ParentId           integer,
 	BodyName           text,
 	BodyID             integer,
+	Parents			blob,
 	SystemAddress      integer,
 	StarType           text,
 	Subclass           integer,
@@ -55,6 +56,7 @@ create table if not exists Bodies
 	ParentId              integer,
 	BodyName           text,
 	BodyID             integer,
+	Parents 		   blob,
 	StarId                integer,
 	SystemAddress         integer,
 	TidalLock             boolean,
@@ -93,11 +95,11 @@ values (?, ?, ?, ?, ?);`
 // insert a star into the Stars table
 var insertStarSQL = `
 insert into Stars
-	(ParentId, BodyName, BodyID, SystemAddress, StarType, Subclass, StellarMass, Radius, AbsoluteMagnitude, AgeMY, SurfaceTemperature, Luminosity, SemiMajorAxis, Eccentricity, OrbitalInclination, Periapsis, OrbitalPeriod, RotationPeriod, AxialTilt, Rings, WasDiscovered, WasMapped)
-values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`
+	(ParentId, BodyName, BodyID, Parents, SystemAddress, StarType, Subclass, StellarMass, Radius, AbsoluteMagnitude, AgeMY, SurfaceTemperature, Luminosity, SemiMajorAxis, Eccentricity, OrbitalInclination, Periapsis, OrbitalPeriod, RotationPeriod, AxialTilt, Rings, WasDiscovered, WasMapped)
+values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`
 
 // insert a body into the Bodies table
 var insertBodySQL = `
 insert into Bodies
-	(ParentId, BodyName, BodyID, StarId, SystemAddress, TidalLock, TerraformState, PlanetClass, Atmosphere, AtmosphereType, AtmosphereComposition, Volcanism, MassEM, Radius, SurfaceGravity, SurfaceTemperature, SurfacePressure, Landable, Materials, BodyComposition, SemiMajorAxis, Eccentricity, OrbitalInclination, Periapsis, OrbitalPeriod, RotationPeriod, AxialTilt, Rings, WasDiscovered, WasMapped)
-values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`
+	(ParentId, BodyName, BodyID, Parents, StarId, SystemAddress, TidalLock, TerraformState, PlanetClass, Atmosphere, AtmosphereType, AtmosphereComposition, Volcanism, MassEM, Radius, SurfaceGravity, SurfaceTemperature, SurfacePressure, Landable, Materials, BodyComposition, SemiMajorAxis, Eccentricity, OrbitalInclination, Periapsis, OrbitalPeriod, RotationPeriod, AxialTilt, Rings, WasDiscovered, WasMapped)
+values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`
