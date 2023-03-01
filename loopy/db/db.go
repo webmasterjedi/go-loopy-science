@@ -4,8 +4,9 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/mattn/go-sqlite3"
+	_ "github.com/mattn/go-sqlite3"
 	"goloopyscience/loopy/dscanner/types"
-	_ "modernc.org/sqlite"
 )
 
 var (
@@ -13,9 +14,21 @@ var (
 	ErrNoRecord = errors.New("record not found")
 )
 
+func handleSQLiteError(err error) error {
+	var sqliteErr sqlite3.Error
+	if errors.As(err, &sqliteErr) {
+		if errors.Is(sqliteErr.Code, sqlite3.ErrConstraint) {
+			return ErrDup
+		}
+	} else if errors.Is(err, sql.ErrNoRows) {
+		return ErrNoRecord
+	}
+	return err
+}
+
 // GetDB returns a pointer to the loopy database
 func GetDB() (*sql.DB, error) {
-	db, err := sql.Open("sqlite", "./loopy.db")
+	db, err := sql.Open("sqlite3", "./loopy.db")
 	if err != nil {
 		return nil, err
 	}
@@ -73,10 +86,12 @@ func InsertSystem(system *types.StarSystem) error {
 	res, err := stmt.Exec(system.FSDJumpEvent.SystemAddress, system.FSDJumpEvent.StarSystem, system.FSDJumpEvent.Body, system.FSDJumpEvent.BodyID, system.FSDJumpEvent.BodyType)
 
 	if err != nil {
-		if err.Error() == "constraint failed: UNIQUE constraint failed: Systems.SystemAddress (1555)" {
-			fmt.Print(ErrDup)
+		//check sql error type for unique constraint
+		err = handleSQLiteError(err)
+		if err == ErrDup {
 			return nil
 		}
+		fmt.Print(err)
 		return err
 	}
 

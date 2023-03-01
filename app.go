@@ -41,7 +41,7 @@ func (a *App) startup(ctx context.Context) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		spew.Dump(starSystems)
+		spew.Dump(starSystems[0])
 
 	}
 }
