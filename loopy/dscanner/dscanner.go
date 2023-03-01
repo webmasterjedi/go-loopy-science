@@ -1,7 +1,6 @@
 package dscanner
 
 import (
-	"github.com/davecgh/go-spew/spew"
 	jsoniter "github.com/json-iterator/go"
 	"goloopyscience/loopy/db"
 	"goloopyscience/loopy/dscanner/types"
@@ -121,7 +120,7 @@ func processFile(path string) error {
 		if err != nil {
 			return err
 		}
-		spew.Dump(event.EventType())
+		//if the event is an FSDJump event, set the current star system
 		if event.EventType() == "FSDJumpEvent" {
 			currentSystem = setStarSystem(event.(*types.FSDJumpEvent))
 		}
@@ -149,7 +148,6 @@ func processFile(path string) error {
 func setStarSystem(entry *types.FSDJumpEvent) *types.StarSystem {
 	for index := range allSystems {
 		if allSystems[index].FSDJumpEvent.StarSystem == entry.StarSystem {
-			spew.Dump(allSystems[index])
 			return allSystems[index]
 		}
 	}

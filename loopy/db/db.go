@@ -2,14 +2,20 @@ package db
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
-	_ "github.com/mattn/go-sqlite3"
 	"goloopyscience/loopy/dscanner/types"
+	_ "modernc.org/sqlite"
+)
+
+var (
+	ErrDup      = errors.New("record already exists")
+	ErrNoRecord = errors.New("record not found")
 )
 
 // GetDB returns a pointer to the loopy database
 func GetDB() (*sql.DB, error) {
-	db, err := sql.Open("sqlite3", "./loopy.db")
+	db, err := sql.Open("sqlite", "./loopy.db")
 	if err != nil {
 		return nil, err
 	}
@@ -60,14 +66,20 @@ func InsertSystem(system *types.StarSystem) error {
 	}
 	stmt, err := db.Prepare(insertSystemSQL)
 	if err != nil {
-		fmt.Print(err)
 		return err
 	}
+	defer stmt.Close()
+
 	res, err := stmt.Exec(system.FSDJumpEvent.SystemAddress, system.FSDJumpEvent.StarSystem, system.FSDJumpEvent.Body, system.FSDJumpEvent.BodyID, system.FSDJumpEvent.BodyType)
+
 	if err != nil {
-		fmt.Print(err)
+		if err.Error() == "constraint failed: UNIQUE constraint failed: Systems.SystemAddress (1555)" {
+			fmt.Print(ErrDup)
+			return nil
+		}
 		return err
 	}
+
 	newSystemId, err := res.LastInsertId()
 	if err != nil {
 		fmt.Print(err)
