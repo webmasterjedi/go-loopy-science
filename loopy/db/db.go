@@ -109,7 +109,7 @@ func InsertStar(star *types.Star) error {
 	defer stmt.Close()
 	//TODO: get parent star/body id from Parents array
 
-	_, err = stmt.Exec(0, star.BodyName, star.BodyID, star.ParentsToJson(), star.SystemAddress, star.StarType, star.Subclass, star.StellarMass, star.Radius, star.AbsoluteMagnitude, star.AgeMY, star.SurfaceTemperature, star.Luminosity, star.SemiMajorAxis, star.Eccentricity, star.OrbitalInclination, star.Periapsis, star.OrbitalPeriod, star.RotationPeriod, star.AxialTilt, star.RingsToJson(), star.WasDiscovered, star.WasMapped)
+	_, err = stmt.Exec(star.ParentID, star.ParentType, star.BodyName, star.BodyID, star.SystemAddress, star.StarType, star.Subclass, star.StellarMass, star.Radius, star.AbsoluteMagnitude, star.AgeMY, star.SurfaceTemperature, star.Luminosity, star.SemiMajorAxis, star.Eccentricity, star.OrbitalInclination, star.Periapsis, star.OrbitalPeriod, star.RotationPeriod, star.AxialTilt, star.RingsToJson(), star.WasDiscovered, star.WasMapped)
 
 	if err != nil {
 		//check sql error type for unique constraint
@@ -137,7 +137,8 @@ func InsertBody(body *types.Body) error {
 		return err
 	}
 	defer stmt.Close()
-	_, err = stmt.Exec(0, body.BodyName, body.BodyID, body.ParentsToJson(), 0, body.SystemAddress, body.TidalLock, body.TerraformState, body.PlanetClass, body.Atmosphere, body.AtmosphereType, body.AtmosphereCompositionToJson(), body.Volcanism, body.MassEM, body.Radius, body.SurfaceGravity, body.SurfaceTemperature, body.SurfacePressure, body.Landable, body.MaterialsToJson(), body.BodyCompositionToJson(), body.SemiMajorAxis, body.Eccentricity, body.OrbitalInclination, body.Periapsis, body.OrbitalPeriod, body.RotationPeriod, body.AxialTilt, body.RingsToJson(), body.WasDiscovered, body.WasMapped)
+	fmt.Print("\n", "Adding body...", "\n")
+	_, err = stmt.Exec(body.ParentID, body.ParentType, body.BodyName, body.BodyID, body.SystemAddress, body.TidalLock, body.TerraformState, body.PlanetClass, body.Atmosphere, body.AtmosphereType, body.AtmosphereCompositionToJson(), body.Volcanism, body.MassEM, body.Radius, body.SurfaceGravity, body.SurfaceTemperature, body.SurfacePressure, body.Landable, body.MaterialsToJson(), body.BodyCompositionToJson(), body.SemiMajorAxis, body.Eccentricity, body.OrbitalInclination, body.Periapsis, body.OrbitalPeriod, body.RotationPeriod, body.AxialTilt, body.RingsToJson(), body.WasDiscovered, body.WasMapped)
 	if err != nil {
 		//check sql error type for unique constraint
 		err = handleDBError(err)

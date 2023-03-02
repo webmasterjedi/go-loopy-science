@@ -31,21 +31,22 @@ func NewApp() *App {
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 	//for testing remove loopy.db file first
-	_ = os.Remove("./loopy.db")
-
-	err := db.CreateTables()
+	err := os.Remove("./loopy.db")
+	if err != nil {
+		spew.Dump(err)
+		panic(err)
+	}
+	err = db.CreateTables()
 	if err != nil {
 		log.Fatal(err)
 	}
 	if a.checkJournalDir() {
 		journalDirExists = true
 		//Scan the D
-		starSystems, err := dscanner.Honk(journalDir)
+		_, err := dscanner.Honk(journalDir)
 		if err != nil {
 			log.Fatal(err)
 		}
-		spew.Dump(starSystems[0])
-
 	}
 }
 

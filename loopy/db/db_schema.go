@@ -18,13 +18,13 @@ create table if not exists Systems
 var createStars = `
 create table if not exists Stars
 (
-	Id                 integer not null
+	ID                 integer not null
 		constraint Stars_pk
 			primary key autoincrement,
-	ParentId           integer,
+	ParentID           integer,
+	ParentType         text,
 	BodyName           text,
 	BodyID             integer,
-	Parents			blob,
 	SystemAddress      integer,
 	StarType           text,
 	Subclass           integer,
@@ -50,14 +50,13 @@ create table if not exists Stars
 var createBodies = `
 create table if not exists Bodies
 (
-	Id                    integer not null
+	ID                    integer not null
 		constraint Bodies_pk
 			primary key autoincrement,
-	ParentId              integer,
-	BodyName           text,
+	ParentID              integer,
+	ParentType            text,
+	BodyName           text not null unique,
 	BodyID             integer,
-	Parents 		   blob,
-	StarId                integer,
 	SystemAddress         integer,
 	TidalLock             boolean,
 	TerraformState        text,
@@ -95,11 +94,11 @@ values (?, ?, ?, ?, ?);`
 // insert a star into the Stars table
 var insertStarSQL = `
 insert into Stars
-	(ParentId, BodyName, BodyID, Parents, SystemAddress, StarType, Subclass, StellarMass, Radius, AbsoluteMagnitude, AgeMY, SurfaceTemperature, Luminosity, SemiMajorAxis, Eccentricity, OrbitalInclination, Periapsis, OrbitalPeriod, RotationPeriod, AxialTilt, Rings, WasDiscovered, WasMapped)
+	(ParentID, ParentType, BodyName, BodyID, SystemAddress, StarType, Subclass, StellarMass, Radius, AbsoluteMagnitude, AgeMY, SurfaceTemperature, Luminosity, SemiMajorAxis, Eccentricity, OrbitalInclination, Periapsis, OrbitalPeriod, RotationPeriod, AxialTilt, Rings, WasDiscovered, WasMapped)
 values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`
 
 // insert a body into the Bodies table
 var insertBodySQL = `
 insert into Bodies
-	(ParentId, BodyName, BodyID, Parents, StarId, SystemAddress, TidalLock, TerraformState, PlanetClass, Atmosphere, AtmosphereType, AtmosphereComposition, Volcanism, MassEM, Radius, SurfaceGravity, SurfaceTemperature, SurfacePressure, Landable, Materials, BodyComposition, SemiMajorAxis, Eccentricity, OrbitalInclination, Periapsis, OrbitalPeriod, RotationPeriod, AxialTilt, Rings, WasDiscovered, WasMapped)
-values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`
+	(ParentID, ParentType, BodyName, BodyID, SystemAddress, TidalLock, TerraformState, PlanetClass, Atmosphere, AtmosphereType, AtmosphereComposition, Volcanism, MassEM, Radius, SurfaceGravity, SurfaceTemperature, SurfacePressure, Landable, Materials, BodyComposition, SemiMajorAxis, Eccentricity, OrbitalInclination, Periapsis, OrbitalPeriod, RotationPeriod, AxialTilt, Rings, WasDiscovered, WasMapped)
+values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`

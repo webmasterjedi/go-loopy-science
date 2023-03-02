@@ -54,7 +54,9 @@ func parseEvent(data []byte) (types.Event, error) {
 	if err != nil {
 		return &baseScanEvent, err
 	}
-
+	if baseScanEvent.SkipEvent() {
+		return nil, nil
+	}
 	//switch to handle main event types
 	switch baseScanEvent.Event {
 	//FSDJump event is used to get current star system
@@ -121,6 +123,9 @@ func processFile(path string) error {
 		if err != nil {
 			return err
 		}
+		if event == nil {
+			continue
+		}
 		//if the event is an FSDJump event, set the current star system
 		if event.EventType() == "FSDJumpEvent" {
 			currentSystem = setStarSystem(event.(*types.FSDJumpEvent))
@@ -175,6 +180,11 @@ func addStar(autoScan *types.AutoScanEvent) error {
 	if err != nil {
 		return err
 	}
+
+	parentID, parentType := autoScan.GetParent()
+	star.ParentID = parentID
+	star.ParentType = parentType
+
 	//save to db
 	err = db.InsertStar(&star)
 	if err != nil {
@@ -196,6 +206,11 @@ func addBody(detailed *types.DetailedScanEvent) error {
 	if err != nil {
 		return err
 	}
+
+	parentID, parentType := detailed.GetParent()
+	body.ParentID = parentID
+	body.ParentType = parentType
+
 	//save to db
 	err = db.InsertBody(&body)
 	if err != nil {

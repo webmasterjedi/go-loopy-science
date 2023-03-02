@@ -16,15 +16,6 @@ type Event interface {
 	// add additional methods here as needed
 }
 
-type SystemBody interface {
-	ParentsToJson() string
-	MaterialsToJson() string
-	AtmosphereCompositionToJson() string
-	BodyCompositionToJson() string
-	RingsToJson() string
-	ToJson() string
-}
-
 // BaseScanEvent is the base type for all scan events
 type BaseScanEvent struct {
 	Event    string `json:"event"`
@@ -129,54 +120,21 @@ type StarSystem struct {
 }
 
 type Star struct {
-	BodyName              string   `json:"BodyName,omitempty"`
-	BodyID                uint64   `json:"BodyID,omitempty"`
-	Parents               []Parent `json:"Parents,omitempty"`
-	StarSystem            string   `json:"StarSystem,omitempty"`
-	SystemAddress         uint64   `json:"SystemAddress,omitempty"`
-	DistanceFromArrivalLS float64  `json:"DistanceFromArrivalLS,omitempty"`
-	StarType              string   `json:"StarType,omitempty"`
-	Subclass              uint     `json:"Subclass,omitempty"`
-	StellarMass           float64  `json:"StellarMass,omitempty"`
-	Radius                float64  `json:"Radius,omitempty"`
-	AbsoluteMagnitude     float64  `json:"AbsoluteMagnitude,omitempty"`
-	AgeMY                 float64  `json:"Age_MY,omitempty"`
-	SurfaceTemperature    float64  `json:"SurfaceTemperature,omitempty"`
-	Luminosity            string   `json:"Luminosity,omitempty"`
-	SemiMajorAxis         float64  `json:"SemiMajorAxis,omitempty"`
-	Eccentricity          float64  `json:"Eccentricity,omitempty"`
-	OrbitalInclination    float64  `json:"OrbitalInclination,omitempty"`
-	Periapsis             float64  `json:"Periapsis,omitempty"`
-	OrbitalPeriod         float64  `json:"OrbitalPeriod,omitempty"`
-	RotationPeriod        float64  `json:"RotationPeriod,omitempty"`
-	AxialTilt             float64  `json:"AxialTilt,omitempty"`
-	Rings                 []Ring   `json:"Rings,omitempty"`
-	WasDiscovered         bool     `json:"WasDiscovered,omitempty"`
-	WasMapped             bool     `json:"WasMapped,omitempty"`
-}
-
-type Body struct {
-	BodyName              string    `json:"BodyName,omitempty"`
-	BodyID                uint64    `json:"BodyID,omitempty"`
-	Parents               []Parent  `json:"Parents,omitempty"`
-	StarSystem            string    `json:"StarSystem,omitempty"`
-	SystemAddress         uint64    `json:"SystemAddress,omitempty"`
-	DistanceFromArrivalLS float64   `json:"DistanceFromArrivalLS,omitempty"`
-	TidalLock             bool      `json:"TidalLock,omitempty"`
-	TerraformState        string    `json:"TerraformState,omitempty"`
-	PlanetClass           string    `json:"PlanetClass,omitempty"`
-	Atmosphere            string    `json:"Atmosphere,omitempty"`
-	AtmosphereType        string    `json:"AtmosphereType,omitempty"`
-	AtmosphereComposition []Percent `json:"AtmosphereComposition,omitempty"`
-	Volcanism             string    `json:"Volcanism,omitempty"`
-	MassEM                float64   `json:"MassEM,omitempty"`
-	Radius                float64   `json:"Radius,omitempty"`
-	SurfaceGravity        float64   `json:"SurfaceGravity,omitempty"`
-	SurfaceTemperature    float64   `json:"SurfaceTemperature,omitempty"`
-	SurfacePressure       float64   `json:"SurfacePressure,omitempty"`
-	Landable              bool      `json:"Landable,omitempty"`
-	Materials             []Percent `json:"Materials,omitempty"`
-	BodyComposition       `json:"BodyComposition,omitempty"`
+	BodyName              string  `json:"BodyName,omitempty"`
+	BodyID                uint64  `json:"BodyID,omitempty"`
+	ParentID              uint    `json:"ParentID,omitempty"`
+	ParentType            string  `json:"ParentType,omitempty"`
+	StarSystem            string  `json:"StarSystem,omitempty"`
+	SystemAddress         uint64  `json:"SystemAddress,omitempty"`
+	DistanceFromArrivalLS float64 `json:"DistanceFromArrivalLS,omitempty"`
+	StarType              string  `json:"StarType,omitempty"`
+	Subclass              uint    `json:"Subclass,omitempty"`
+	StellarMass           float64 `json:"StellarMass,omitempty"`
+	Radius                float64 `json:"Radius,omitempty"`
+	AbsoluteMagnitude     float64 `json:"AbsoluteMagnitude,omitempty"`
+	AgeMY                 float64 `json:"Age_MY,omitempty"`
+	SurfaceTemperature    float64 `json:"SurfaceTemperature,omitempty"`
+	Luminosity            string  `json:"Luminosity,omitempty"`
 	SemiMajorAxis         float64 `json:"SemiMajorAxis,omitempty"`
 	Eccentricity          float64 `json:"Eccentricity,omitempty"`
 	OrbitalInclination    float64 `json:"OrbitalInclination,omitempty"`
@@ -187,6 +145,41 @@ type Body struct {
 	Rings                 []Ring  `json:"Rings,omitempty"`
 	WasDiscovered         bool    `json:"WasDiscovered,omitempty"`
 	WasMapped             bool    `json:"WasMapped,omitempty"`
+}
+
+type Body struct {
+	BodyName              string          `json:"BodyName,omitempty"`
+	BodyID                uint64          `json:"BodyID,omitempty"`
+	ParentID              uint            `json:"ParentID,omitempty"`
+	ParentType            string          `json:"ParentType,omitempty"`
+	StarSystem            string          `json:"StarSystem,omitempty"`
+	SystemAddress         uint64          `json:"SystemAddress,omitempty"`
+	DistanceFromArrivalLS float64         `json:"DistanceFromArrivalLS,omitempty"`
+	TidalLock             bool            `json:"TidalLock,omitempty"`
+	TerraformState        string          `json:"TerraformState,omitempty"`
+	PlanetClass           string          `json:"PlanetClass,omitempty"`
+	Atmosphere            string          `json:"Atmosphere,omitempty"`
+	AtmosphereType        string          `json:"AtmosphereType,omitempty"`
+	AtmosphereComposition []Percent       `json:"AtmosphereComposition,omitempty"`
+	Volcanism             string          `json:"Volcanism,omitempty"`
+	MassEM                float64         `json:"MassEM,omitempty"`
+	Radius                float64         `json:"Radius,omitempty"`
+	SurfaceGravity        float64         `json:"SurfaceGravity,omitempty"`
+	SurfaceTemperature    float64         `json:"SurfaceTemperature,omitempty"`
+	SurfacePressure       float64         `json:"SurfacePressure,omitempty"`
+	Landable              bool            `json:"Landable,omitempty"`
+	Materials             []Percent       `json:"Materials,omitempty"`
+	BodyComposition       BodyComposition `json:"BodyComposition,omitempty"`
+	SemiMajorAxis         float64         `json:"SemiMajorAxis,omitempty"`
+	Eccentricity          float64         `json:"Eccentricity,omitempty"`
+	OrbitalInclination    float64         `json:"OrbitalInclination,omitempty"`
+	Periapsis             float64         `json:"Periapsis,omitempty"`
+	OrbitalPeriod         float64         `json:"OrbitalPeriod,omitempty"`
+	RotationPeriod        float64         `json:"RotationPeriod,omitempty"`
+	AxialTilt             float64         `json:"AxialTilt,omitempty"`
+	Rings                 []Ring          `json:"Rings,omitempty"`
+	WasDiscovered         bool            `json:"WasDiscovered,omitempty"`
+	WasMapped             bool            `json:"WasMapped,omitempty"`
 }
 
 type Parent struct {
@@ -232,10 +225,68 @@ func (dse *DetailedScanEvent) EventType() string {
 }
 
 func (bse *BaseScanEvent) SkipEvent() bool {
-	if bse.ScanType != "Detailed" && bse.ScanType != "AutoScan" {
+	if bse.ScanType == "Detailed" || bse.ScanType == "AutoScan" || bse.Event == "FSDJump" {
 		return false
 	}
 	return true
+}
+
+func (ase *AutoScanEvent) GetParent() (uint, string) {
+	if len(ase.Parents) == 0 {
+		return 0, ""
+	}
+	firstParent := ase.Parents[0]
+
+	var parentType string
+	var parentID uint
+
+	switch {
+	case firstParent.Star != -1:
+		parentType = "Star"
+		parentID = uint(firstParent.Star)
+	case firstParent.Planet != -1:
+		parentType = "Planet"
+		parentID = uint(firstParent.Planet)
+	case firstParent.Null != -1:
+		parentType = "Null"
+		parentID = uint(firstParent.Null)
+	case firstParent.Ring != -1:
+		parentType = "Ring"
+		parentID = uint(firstParent.Ring)
+	default:
+		return 0, ""
+	}
+
+	return parentID, parentType
+}
+
+func (dse *DetailedScanEvent) GetParent() (uint, string) {
+	if len(dse.Parents) == 0 {
+		return 0, ""
+	}
+	firstParent := dse.Parents[0]
+
+	var parentType string
+	var parentID uint
+
+	switch {
+	case firstParent.Star != -1:
+		parentType = "Star"
+		parentID = uint(firstParent.Star)
+	case firstParent.Planet != -1:
+		parentType = "Planet"
+		parentID = uint(firstParent.Planet)
+	case firstParent.Null != -1:
+		parentType = "Null"
+		parentID = uint(firstParent.Null)
+	case firstParent.Ring != -1:
+		parentType = "Ring"
+		parentID = uint(firstParent.Ring)
+	default:
+		return 0, ""
+	}
+
+	return parentID, parentType
 }
 
 func (s *StarSystem) AddStar(star *Star) {
@@ -246,28 +297,12 @@ func (s *StarSystem) AddBody(body *Body) {
 	s.Bodies = append(s.Bodies, body)
 }
 
-func (s *Star) ParentsToJson() string {
-	parents, err := json.Marshal(s.Parents)
-	if err != nil {
-		log.Println(err)
-	}
-	return string(parents)
-}
-
 func (s *Star) RingsToJson() string {
 	rings, err := json.Marshal(s.Rings)
 	if err != nil {
 		log.Println(err)
 	}
 	return string(rings)
-}
-
-func (b *Body) ParentsToJson() string {
-	parents, err := json.Marshal(b.Parents)
-	if err != nil {
-		log.Println(err)
-	}
-	return string(parents)
 }
 
 func (b *Body) RingsToJson() string {
@@ -319,6 +354,9 @@ func (p *Parent) UnmarshalJSON(data []byte) error {
 		Null   *int `json:"Null,omitempty"`
 		Ring   *int `json:"Ring,omitempty"`
 	}
+	/*fmt.Print("incoming data: \n\n")
+	spew.Dump(string(data))
+	fmt.Print("\n#####################################\n")*/
 
 	// Unmarshal the JSON into the temporary struct
 	err := json.Unmarshal(data, &tmp)
@@ -326,7 +364,7 @@ func (p *Parent) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	// If a key is present in the JSON object and has a non-null value, set the corresponding field in the target struct
+	// Checking each pointer for nil and assigning the value to the Parent struct
 	if tmp.Null != nil {
 		p.Null = *tmp.Null
 	} else {
