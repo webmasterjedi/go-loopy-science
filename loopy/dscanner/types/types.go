@@ -148,38 +148,38 @@ type Star struct {
 }
 
 type Body struct {
-	BodyName              string          `json:"BodyName,omitempty"`
-	BodyID                uint64          `json:"BodyID,omitempty"`
-	ParentID              uint            `json:"ParentID,omitempty"`
-	ParentType            string          `json:"ParentType,omitempty"`
-	StarSystem            string          `json:"StarSystem,omitempty"`
-	SystemAddress         uint64          `json:"SystemAddress,omitempty"`
-	DistanceFromArrivalLS float64         `json:"DistanceFromArrivalLS,omitempty"`
-	TidalLock             bool            `json:"TidalLock,omitempty"`
-	TerraformState        string          `json:"TerraformState,omitempty"`
-	PlanetClass           string          `json:"PlanetClass,omitempty"`
-	Atmosphere            string          `json:"Atmosphere,omitempty"`
-	AtmosphereType        string          `json:"AtmosphereType,omitempty"`
-	AtmosphereComposition []Percent       `json:"AtmosphereComposition,omitempty"`
-	Volcanism             string          `json:"Volcanism,omitempty"`
-	MassEM                float64         `json:"MassEM,omitempty"`
-	Radius                float64         `json:"Radius,omitempty"`
-	SurfaceGravity        float64         `json:"SurfaceGravity,omitempty"`
-	SurfaceTemperature    float64         `json:"SurfaceTemperature,omitempty"`
-	SurfacePressure       float64         `json:"SurfacePressure,omitempty"`
-	Landable              bool            `json:"Landable,omitempty"`
-	Materials             []Percent       `json:"Materials,omitempty"`
-	BodyComposition       BodyComposition `json:"BodyComposition,omitempty"`
-	SemiMajorAxis         float64         `json:"SemiMajorAxis,omitempty"`
-	Eccentricity          float64         `json:"Eccentricity,omitempty"`
-	OrbitalInclination    float64         `json:"OrbitalInclination,omitempty"`
-	Periapsis             float64         `json:"Periapsis,omitempty"`
-	OrbitalPeriod         float64         `json:"OrbitalPeriod,omitempty"`
-	RotationPeriod        float64         `json:"RotationPeriod,omitempty"`
-	AxialTilt             float64         `json:"AxialTilt,omitempty"`
-	Rings                 []Ring          `json:"Rings,omitempty"`
-	WasDiscovered         bool            `json:"WasDiscovered,omitempty"`
-	WasMapped             bool            `json:"WasMapped,omitempty"`
+	BodyName              string    `json:"BodyName,omitempty"`
+	BodyID                uint64    `json:"BodyID,omitempty"`
+	ParentID              uint      `json:"ParentID,omitempty"`
+	ParentType            string    `json:"ParentType,omitempty"`
+	StarSystem            string    `json:"StarSystem,omitempty"`
+	SystemAddress         uint64    `json:"SystemAddress,omitempty"`
+	DistanceFromArrivalLS float64   `json:"DistanceFromArrivalLS,omitempty"`
+	TidalLock             bool      `json:"TidalLock,omitempty"`
+	TerraformState        string    `json:"TerraformState,omitempty"`
+	PlanetClass           string    `json:"PlanetClass,omitempty"`
+	Atmosphere            string    `json:"Atmosphere,omitempty"`
+	AtmosphereType        string    `json:"AtmosphereType,omitempty"`
+	AtmosphereComposition []Percent `json:"AtmosphereComposition,omitempty"`
+	Volcanism             string    `json:"Volcanism,omitempty"`
+	MassEM                float64   `json:"MassEM,omitempty"`
+	Radius                float64   `json:"Radius,omitempty"`
+	SurfaceGravity        float64   `json:"SurfaceGravity,omitempty"`
+	SurfaceTemperature    float64   `json:"SurfaceTemperature,omitempty"`
+	SurfacePressure       float64   `json:"SurfacePressure,omitempty"`
+	Landable              bool      `json:"Landable,omitempty"`
+	Materials             []Percent `json:"Materials,omitempty"`
+	BodyComposition       BodyComp  `json:"BodyComposition,omitempty"`
+	SemiMajorAxis         float64   `json:"SemiMajorAxis,omitempty"`
+	Eccentricity          float64   `json:"Eccentricity,omitempty"`
+	OrbitalInclination    float64   `json:"OrbitalInclination,omitempty"`
+	Periapsis             float64   `json:"Periapsis,omitempty"`
+	OrbitalPeriod         float64   `json:"OrbitalPeriod,omitempty"`
+	RotationPeriod        float64   `json:"RotationPeriod,omitempty"`
+	AxialTilt             float64   `json:"AxialTilt,omitempty"`
+	Rings                 []Ring    `json:"Rings,omitempty"`
+	WasDiscovered         bool      `json:"WasDiscovered,omitempty"`
+	WasMapped             bool      `json:"WasMapped,omitempty"`
 }
 
 type Parent struct {
@@ -200,10 +200,16 @@ type Percent struct {
 	Name    string  `json:"Name"`
 	Percent float64 `json:"Percent"`
 }
-type BodyComposition struct {
+type BodyComp struct {
 	Ice   float64 `json:"Ice"`
 	Rock  float64 `json:"Rock"`
 	Metal float64 `json:"Metal"`
+}
+
+type BodyCounts struct {
+	WaterWorlds     int
+	EarthLikeWorlds int
+	AmmoniaWorlds   int
 }
 
 // EventType struct methods for interface compliance

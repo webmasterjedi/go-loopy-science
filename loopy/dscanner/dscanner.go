@@ -3,7 +3,6 @@ package dscanner
 import (
 	"fmt"
 	jsoniter "github.com/json-iterator/go"
-	"goloopyscience/loopy/db"
 	"goloopyscience/loopy/dscanner/types"
 	"os"
 	"path/filepath"
@@ -37,7 +36,7 @@ func Honk(dir string) ([]*types.StarSystem, error) {
 		if filepath.Ext(file.Name()) == ".log" {
 			err := processFile(filepath.Join(dir, file.Name()))
 			if err != nil {
-				return nil, err
+				fmt.Printf("failed to process file %s: %w", file.Name(), err)
 			}
 		}
 	}
@@ -54,6 +53,7 @@ func parseEvent(data []byte) (types.Event, error) {
 	if err != nil {
 		return &baseScanEvent, err
 	}
+
 	if baseScanEvent.SkipEvent() {
 		return nil, nil
 	}
@@ -115,21 +115,26 @@ func processFile(path string) error {
 
 	entries := strings.Split(string(data), "\n")
 	for _, entry := range entries {
+
 		if entry == "" {
 			continue
 		}
+
 		//parse journal entry and returns struct based on event types
 		event, err := parseEvent([]byte(entry))
 		if err != nil {
 			return err
 		}
+
 		if event == nil {
 			continue
 		}
+
 		//if the event is an FSDJump event, set the current star system
 		if event.EventType() == "FSDJumpEvent" {
 			currentSystem = setStarSystem(event.(*types.FSDJumpEvent))
 		}
+
 		if currentSystem != nil {
 			//use the event type to call the appropriate function
 			switch event.EventType() {
@@ -138,11 +143,13 @@ func processFile(path string) error {
 				if err != nil {
 					return err
 				}
+
 			case "DetailedScanEvent":
 				err := addBody(event.(*types.DetailedScanEvent))
 				if err != nil {
 					return err
 				}
+
 			}
 		}
 	}
@@ -160,10 +167,10 @@ func setStarSystem(entry *types.FSDJumpEvent) *types.StarSystem {
 	starSystem := new(types.StarSystem)
 	starSystem.FSDJumpEvent = entry
 	//save to db
-	err := db.InsertSystem(starSystem)
+	/*err := db.InsertSystem(starSystem)
 	if err != nil {
 		fmt.Print(err)
-	}
+	}*/
 	allSystems = append(allSystems, starSystem)
 	return allSystems[len(allSystems)-1]
 }
@@ -186,10 +193,10 @@ func addStar(autoScan *types.AutoScanEvent) error {
 	star.ParentType = parentType
 
 	//save to db
-	err = db.InsertStar(&star)
+	/*err = db.InsertStar(&star)
 	if err != nil {
 		fmt.Print(err)
-	}
+	}*/
 	currentSystem.AddStar(&star)
 	return nil
 }
@@ -212,10 +219,10 @@ func addBody(detailed *types.DetailedScanEvent) error {
 	body.ParentType = parentType
 
 	//save to db
-	err = db.InsertBody(&body)
+	/*err = db.InsertBody(&body)
 	if err != nil {
 		fmt.Print(err)
-	}
+	}*/
 	currentSystem.AddBody(&body)
 	return nil
 }

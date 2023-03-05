@@ -23,7 +23,7 @@ create table if not exists Stars
 			primary key autoincrement,
 	ParentID           integer,
 	ParentType         text,
-	BodyName           text,
+	BodyName           text unique,
 	BodyID             integer,
 	SystemAddress      integer,
 	StarType           text,

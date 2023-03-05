@@ -4,10 +4,12 @@ import (
 	"context"
 	"fmt"
 	"github.com/davecgh/go-spew/spew"
-	"goloopyscience/loopy/db"
 	"goloopyscience/loopy/dscanner"
+	"goloopyscience/loopy/dscanner/types"
+	"goloopyscience/loopy/totals"
 	"log"
 	"os"
+	"time"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -15,6 +17,7 @@ import (
 var userHomeDir, _ = os.UserHomeDir()
 var journalDir string = userHomeDir + "\\Saved Games\\Frontier Developments\\Elite Dangerous\\test"
 var journalDirExists bool = false
+var StarsToBodies = make(map[string]*types.BodyCounts)
 
 // App struct
 type App struct {
@@ -31,7 +34,7 @@ func NewApp() *App {
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 	//for testing remove loopy.db file first
-	err := os.Remove("./loopy.db")
+	/*err := os.Remove("./loopy.db")
 	if err != nil {
 		spew.Dump(err)
 		panic(err)
@@ -39,14 +42,19 @@ func (a *App) startup(ctx context.Context) {
 	err = db.CreateTables()
 	if err != nil {
 		log.Fatal(err)
-	}
+	}*/
 	if a.checkJournalDir() {
 		journalDirExists = true
+		start := time.Now()
 		//Scan the D
-		_, err := dscanner.Honk(journalDir)
+		allSystems, err := dscanner.Honk(journalDir)
 		if err != nil {
 			log.Fatal(err)
 		}
+		StarsToBodies = totals.Build(&allSystems, StarsToBodies)
+		spew.Dump(StarsToBodies)
+		elapsed := time.Since(start)
+		fmt.Printf("Scan took %s", elapsed)
 	}
 }
 
