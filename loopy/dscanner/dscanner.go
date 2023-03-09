@@ -223,6 +223,13 @@ func addBody(detailed *types.DetailedScanEvent) error {
 	if err != nil {
 		fmt.Print(err)
 	}*/
+
+	//add body to star system if a body with the same name does not already exist
+	for _, b := range currentSystem.Bodies {
+		if b.BodyName == body.BodyName {
+			return nil
+		}
+	}
 	currentSystem.AddBody(&body)
 	return nil
 }

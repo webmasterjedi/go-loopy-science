@@ -1,6 +1,7 @@
 package types
 
 import (
+	"fmt"
 	jsoniter "github.com/json-iterator/go"
 	"log"
 )
@@ -180,6 +181,7 @@ type Body struct {
 	Rings                 []Ring    `json:"Rings,omitempty"`
 	WasDiscovered         bool      `json:"WasDiscovered,omitempty"`
 	WasMapped             bool      `json:"WasMapped,omitempty"`
+	Counted               bool      `json:"-"`
 }
 
 type Parent struct {
@@ -208,7 +210,7 @@ type BodyComp struct {
 
 type BodyCounts struct {
 	WaterWorlds     int
-	EarthLikeWorlds int
+	EarthlikeBodies int
 	AmmoniaWorlds   int
 }
 
@@ -310,6 +312,9 @@ func (s *Star) RingsToJson() string {
 	}
 	return string(rings)
 }
+func (s *Star) GetFullStarType() string {
+	return fmt.Sprintf("%s%d %s", s.StarType, s.Subclass, s.Luminosity)
+}
 
 func (b *Body) RingsToJson() string {
 	rings, err := json.Marshal(b.Rings)
@@ -349,6 +354,13 @@ func (b *Body) ToJson() string {
 		log.Println(err)
 	}
 	return string(json)
+}
+
+func (b *Body) IsValuable() bool {
+	if b.PlanetClass == "Earthlike body" || b.PlanetClass == "Water world" || b.PlanetClass == "Ammonia world" {
+		return true
+	}
+	return false
 }
 
 // UnmarshalJSON is a custom unmarshaler for the Parent struct
